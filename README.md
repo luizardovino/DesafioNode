@@ -32,6 +32,13 @@ Getting Started
 
 git clone https://github.com/luizardovino/DesafioNode.git
 
+# Criando a tabela de usuário pelo migration
+\node_modules\.bin>knex migrate:latest --env test
+
+# Rollback no migrations
+\node_modules\.bin>knex migrate:rollback --env test
+
+
 # Instale as dependencias:
 
 npm install
