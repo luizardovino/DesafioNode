@@ -2,8 +2,10 @@ const jwt = require('jwt-simple');
 const jsonwebtoken = require('jsonwebtoken');
 const bcrypt = require('bcrypt-nodejs');
 const ValidationError = require('../errors/ValidationError');
+const config = require('../config/configdev');
 
-const secret = 'Segredo!';
+//const secret = 'Segredo!';
+
 
 
 module.exports = (app) => {
@@ -14,7 +16,7 @@ module.exports = (app) => {
       name: user.name,
       mail: user.mail,
     };
-    const token = jwt.encode(payload, secret);
+    const token = jwt.encode(payload, config.jwt.secret);
     //console.log(token);
 
     return token;
@@ -36,7 +38,7 @@ module.exports = (app) => {
   const verifyToken = (token) => {
     let result = '';
     try {
-      let verify = jsonwebtoken.verify(token, secret); //TODO config.jwt.secret
+      let verify = jsonwebtoken.verify(token, config.jwt.secret); //TODO config.jwt.secret
       //console.log(verify);
 
       result = verify.data;

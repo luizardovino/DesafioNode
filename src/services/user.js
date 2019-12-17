@@ -1,7 +1,8 @@
 const bcrypt = require('bcrypt-nodejs');
 const ValidationError = require('../errors/ValidationError');
 const jwt = require('jwt-simple');
-const Helper = require('../helpers/helper')
+const Helper = require('../helpers/helper');
+const config = require('../config/configdev');
 
 //const Request = require('express');
 
@@ -119,7 +120,7 @@ module.exports = (app) => {
       data_criacao: DataUser,
       data_atualizacao: DataUser,
       ultimo_login: DataUser,
-      token: jwt.encode(user, 'Segredo!'),
+      token: jwt.encode(user, config.jwt.secret),
       telefones: user.telefones
     }
 
