@@ -6,9 +6,7 @@ module.exports = (app) => {
 
     //console.log(req.headers['authorization']);
     let tk = req.headers['authorization'];
-
     let auth = app.routes.auth;
-    console.log('tok', tk);
 
     let data = auth.verifyToken(tk);
 
@@ -20,9 +18,9 @@ module.exports = (app) => {
       return res.status(401).json({ mensagem: 'Sessão Inválida' });
     }
 
-    console.log('PARAMS', req.params.id);
+    //console.log('PARAMS', req.params.id);
 
-    app.services.user.findOne({ id: req.params.id }, res)
+    app.services.user.findOne({ id: req.params.id }, tk, res)
       .then(result => res.status(200).json(result))
       .catch(err => next(err));
   };

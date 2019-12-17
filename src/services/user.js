@@ -17,32 +17,33 @@ module.exports = (app) => {
   // · Caso não seja a MENOS que 30 minutos atrás, retornar erro com status apropriado com mensagem "Sessão inválida".
   // · Caso tudo esteja ok, retornar o usuário.
 
-  const findOne = async (filter = {}, res) => {
+  const findOne = async (filter = {}, tk, res) => {
     console.log(filter);
 
     if (!filter) throw new ValidationError('Id do usuário é um atributo obrigatório');
-    //const user = app.db('users').where(filter).first().select(['id', 'name', 'mail', 'passwd', 'data_criacao', 'data_atualizacao', 'ultimo_login', 'token']);
 
     let user;
 
     const usuario = await getUsers(filter);
     user = { ...usuario[0] };
-    console.log('KNEX1', user);
+    //console.log('KNEX1', user);
     if (!user) throw new ValidationError('Usuário não encontrado!');
 
+    if (tk.slice(7, tk.length).trimLeft() != user.token.trim()) {
+      //Token invalido
+      return res.status(401).json({ mensagem: 'Usuário Não Autorizado' });
+    };
+
     const dtExpirada = new Date();
-    console.log('dtExpirada1', dtExpirada);
+    //console.log('dtExpirada1', dtExpirada);
 
     dtExpirada.setMinutes(-30);
 
     data_login = user.ultimo_login;
 
-    console.log('data_login', data_login);
-    console.log('dtExpirada', dtExpirada);
-
-    if (data_login > dtExpirada) {
-      console.log('EXPIROU');
-      return res.status(401).json({ mensagem: 'Não Autorizado' });
+    if (data_login < dtExpirada) {
+      //console.log('EXPIROU');
+      return res.status(401).json({ mensagem: 'Não Autorizado Expirado' });
     };
 
     async function getUsers(filter) {
