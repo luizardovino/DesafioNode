@@ -28,24 +28,8 @@ module.exports = (app) => {
 
   }
 
-  /**
-   * Function GetToken
-   * Param {Token} Extract token into the head
-   *  exemple 'Bearer token'
-   *  result 'token'
-   * */
-
-  const getToken = (token) => {
-    let auth = '';
-    //if (typeof token !== 'undefined' && typeof token == 'string' && token.indexOf('Bearer') != -1) {
-    auth = token.replace('bearer ', '');
-    //}
-    return auth;
-  }
-
   return {
     guid,
-    http_status,
-    getToken
+    http_status
   };
 };

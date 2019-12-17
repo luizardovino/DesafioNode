@@ -27,6 +27,12 @@ test('Deve buscar o usuário', () => {
     });
 });
 
+test('Não deve acessar uma rota protegida sem token', () => {
+  return request(app).get(`/users/${user.id}`) //http://localhost:3001/users
+    .then((res) => {
+      expect(res.status).toBe(401);
+    });
+});
 
 test('Deve inserir usuário com sucesso', () => {
   return request(app).post('/auth/signup')

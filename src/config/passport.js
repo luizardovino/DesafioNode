@@ -1,9 +1,7 @@
 const passport = require('passport');
 const passportJwt = require('passport-jwt');
 //const config = require('configdev');
-
 const secret = 'Segredo!';
-
 const Strategy = passportJwt.Strategy;
 const ExtractJwt = passportJwt.ExtractJwt;
 

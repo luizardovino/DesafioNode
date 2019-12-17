@@ -4,10 +4,6 @@ const bcrypt = require('bcrypt-nodejs');
 const ValidationError = require('../errors/ValidationError');
 const config = require('../config/configdev');
 
-//const secret = 'Segredo!';
-
-
-
 module.exports = (app) => {
 
   const createToken = (user) => {

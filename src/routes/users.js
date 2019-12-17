@@ -8,7 +8,6 @@ module.exports = (app) => {
     let tk = req.headers['authorization'];
     tk = tk.replace('bearer ', '');
     tk = tk.replace('Bearer ', '');
-    //return res.status(200).json({ mensagem: 'OK' });
     let http = Helper.http_status;
     let auth = app.routes.auth;
     let data = auth.verifyToken(tk);
@@ -42,5 +41,6 @@ module.exports = (app) => {
 
   };
 
+  //return res.status(200).json({ mensagem: 'OK' });
   return { findOne, create };
 }

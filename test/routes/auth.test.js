@@ -36,9 +36,6 @@ test('Não deve autenticar usuário com senha errada', () => {
     });
 });
 
-// test('Não deve acessar uma rota protegida sem token', () => {
-//   return request(app).get('/users')
-//     .then((res) => {
-//       expect(res.status).toBe(401);
-//     });
-// });
+
+
+

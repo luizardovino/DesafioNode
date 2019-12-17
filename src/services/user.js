@@ -44,26 +44,15 @@ module.exports = (app) => {
       console.log('KNEX', user);
       //console.log('TOKEN', user.token);
 
-      // if (!user) {
-      //   return res.status(400).json({ mensagem: 'Usuário não encontrado!' });
-      // };
-
       return user;
     };
 
     user = buscaUsuario();
 
-
-
     if (!user) {
       return res.status(400).json({ mensagem: 'Usuário não encontrado!' });
     };
 
-    //let http = Helper.http_status;
-    // if (user.token != tk) {
-    //   return res.status(401).json({ mensagem: 'Não Autorizado 1' });//http.UNAUTHORIZED
-    // }
-    // else {
     const dtExpirada = new Date();
     dtExpirada.setMinutes(-30)
 
@@ -72,7 +61,6 @@ module.exports = (app) => {
     if (data_login > dtExpirada) {
       return res.status(401).json({ mensagem: 'Não Autorizado 2' });
     };
-    //};
 
     return user;
   };
