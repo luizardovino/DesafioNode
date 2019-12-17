@@ -8,10 +8,6 @@ const config = require('../config/configdev');
 
 module.exports = (app) => {
 
-  const findAll = () => {
-    return app.db('users').select(['id', 'name', 'mail', 'data_criacao', 'data_atualizacao', 'ultimo_login', 'token']);
-  };
-
   // Buscar usuário
   // · Chamadas para este endpoint devem conter um header na requisição de Authentication com o valor "Bearer {token}" onde { token } é o valor do token passado na criação ou sign in de um usuário.
   // · Caso o token não exista, retornar erro com status apropriado com a mensagem "Não autorizado".
@@ -21,49 +17,46 @@ module.exports = (app) => {
   // · Caso não seja a MENOS que 30 minutos atrás, retornar erro com status apropriado com mensagem "Sessão inválida".
   // · Caso tudo esteja ok, retornar o usuário.
 
-  const findOne = (filter = {}, tk, res) => {
-    console.log(filter, tk);
+  const findOne = async (filter = {}, res) => {
+    console.log(filter);
 
     if (!filter) throw new ValidationError('Id do usuário é um atributo obrigatório');
     //const user = app.db('users').where(filter).first().select(['id', 'name', 'mail', 'passwd', 'data_criacao', 'data_atualizacao', 'ultimo_login', 'token']);
 
     let user;
 
-    async function getUsers() {
+    const usuario = await getUsers(filter);
+    user = { ...usuario[0] };
+    console.log('KNEX1', user);
+    if (!user) throw new ValidationError('Usuário não encontrado!');
+
+    const dtExpirada = new Date();
+    console.log('dtExpirada1', dtExpirada);
+
+    dtExpirada.setMinutes(-30);
+
+    data_login = user.ultimo_login;
+
+    console.log('data_login', data_login);
+    console.log('dtExpirada', dtExpirada);
+
+    if (data_login > dtExpirada) {
+      console.log('EXPIROU');
+      return res.status(401).json({ mensagem: 'Não Autorizado' });
+    };
+
+    async function getUsers(filter) {
       return await app.db.select(['id', 'name', 'mail', 'passwd', 'data_criacao', 'data_atualizacao', 'ultimo_login', 'token'])
         .from('users')
         .where(filter)
         .limit(1);
-    }
-    //It is working fine with 0.11.5
-    //"Error: Undefined binding(s) detected when compiling SELECT query: select \"id\", \"name\", \"mail\", \"passwd\", \"data_criacao\", \"data_atualizacao\", \"ultimo_login\", \"token\" from \"users\" where \"id\" = ? limit ?\n    at QueryCompiler_PG.toSQL 
-
-    async function buscaUsuario() {
-      const usuario = await getUsers();
-      user = { ...usuario[0] };
-      console.log('KNEX', user);
-      //console.log('TOKEN', user.token);
-
-      return user;
     };
 
-    user = buscaUsuario();
-
-    if (!user) {
-      return res.status(400).json({ mensagem: 'Usuário não encontrado!' });
-    };
-
-    const dtExpirada = new Date();
-    dtExpirada.setMinutes(-30)
-
-    data_login = user.ultimo_login;
-
-    if (data_login > dtExpirada) {
-      return res.status(401).json({ mensagem: 'Não Autorizado 2' });
-    };
-
-    return user;
+    return user
   };
+
+
+
 
 
   const findByEmail = (filter = {}) => {
@@ -117,5 +110,5 @@ module.exports = (app) => {
 
 
 
-  return { findAll, save, findOne };
+  return { save, findOne };
 };

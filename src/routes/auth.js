@@ -6,36 +6,40 @@ const config = require('../config/configdev');
 
 module.exports = (app) => {
 
-  const createToken = (user) => {
-    const payload = {
-      id: user.id,
-      name: user.name,
-      mail: user.mail,
-    };
-    const token = jwt.encode(payload, config.jwt.secret);
-    //console.log(token);
-
-    return token;
-  };
-
-  // const createTokenOLD = (user) => {
-  //   let token = false;
-  //   var payload = {
+  // const createToken = (user) => {
+  //   const payload = {
   //     id: user.id,
   //     name: user.name,
-  //     mail: user.mail
+  //     mail: user.mail,
   //   };
+  //   const token = jwt.encode(payload, config.jwt.secret);
+  //   //console.log(token);
 
-  //   token = jsonwebtoken.sign(payload, secret);
   //   return token;
   // };
+
+  const createToken = (user) => {
+    let token = false;
+    var payload = {
+      id: user.id,
+      name: user.name,
+      mail: user.mail
+    };
+
+    token = jsonwebtoken.sign(payload, config.jwt.secret);
+    return token;
+  };
 
 
   const verifyToken = (token) => {
     let result = '';
     try {
-      let verify = jsonwebtoken.verify(token, config.jwt.secret); //TODO config.jwt.secret
-      //console.log(verify);
+
+      console.log('token do VerificaToken', token.slice(7, token.length).trimLeft());
+      console.log('config.jwt.secret', config.jwt.secret);
+
+      let verify = jsonwebtoken.verify(token.slice(7, token.length).trimLeft(), config.jwt.secret);
+      console.log('verify.data', verify.data);
 
       result = verify.data;
     } catch (error) {

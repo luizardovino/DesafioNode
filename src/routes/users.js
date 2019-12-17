@@ -6,23 +6,23 @@ module.exports = (app) => {
 
     //console.log(req.headers['authorization']);
     let tk = req.headers['authorization'];
-    tk = tk.replace('bearer ', '');
-    tk = tk.replace('Bearer ', '');
-    let http = Helper.http_status;
+
     let auth = app.routes.auth;
+    console.log('tok', tk);
+
     let data = auth.verifyToken(tk);
 
     if (data === 'error1') {
-      return res.status(401).json({ mensagem: 'Não Autorizado 3' });//TODO http.ANAUTHORIZED
+      return res.status(401).json({ mensagem: 'Não Autorizado' });
     };
 
     if (data === 'error2') {
       return res.status(401).json({ mensagem: 'Sessão Inválida' });
     }
 
+    console.log('PARAMS', req.params.id);
 
-
-    app.services.user.findOne({ id: req.params.id }, tk, res) // req.body['id']
+    app.services.user.findOne({ id: req.params.id }, res)
       .then(result => res.status(200).json(result))
       .catch(err => next(err));
   };
