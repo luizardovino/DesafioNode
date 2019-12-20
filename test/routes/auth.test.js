@@ -4,7 +4,7 @@ const app = require('../../src/app');
 const mail = `${Date.now()}@mail.com`
 const telefones = JSON.stringify([{ numero: '22222222', ddd: '21' }]);
 
-describe.skip('auth.test', () => {
+describe('auth.test', () => {
 
   test('Deve criar usuário via signup', () => {
     return request(app).post('/auth/signup')
@@ -17,7 +17,7 @@ describe.skip('auth.test', () => {
       });
   });
 
-  //utiliza o usuario criado no signup anterior
+
   test('Deve receber token ao logar', () => {
     request(app).post('/auth/signin')
       .send({ mail: mail, passwd: '123456' })
@@ -26,7 +26,7 @@ describe.skip('auth.test', () => {
         expect(res.body.retUser).toHaveProperty('token');
       });
   });
-  //'1576502834003@mail.com'
+
 
   test('Não deve autenticar usuário com senha errada', () => {
     request(app).post('/auth/signin')

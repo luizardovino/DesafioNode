@@ -4,18 +4,9 @@ const jwt = require('jwt-simple');
 const Helper = require('../helpers/helper');
 const config = require('../config/configdev');
 
-//const Request = require('express');
 
 module.exports = (app) => {
 
-  // Buscar usuário
-  // · Chamadas para este endpoint devem conter um header na requisição de Authentication com o valor "Bearer {token}" onde { token } é o valor do token passado na criação ou sign in de um usuário.
-  // · Caso o token não exista, retornar erro com status apropriado com a mensagem "Não autorizado".
-  // · Caso o token exista, buscar o usuário pelo user_id passado no path e comparar se o token no modelo é igual ao token passado no header.
-  // · Caso não seja o mesmo token, retornar erro com status apropriado e mensagem "Não autorizado"
-  // · Caso seja o mesmo token, verificar se o último login foi a MENOS que 30 minutos atrás.
-  // · Caso não seja a MENOS que 30 minutos atrás, retornar erro com status apropriado com mensagem "Sessão inválida".
-  // · Caso tudo esteja ok, retornar o usuário.
 
   const findOne = async (filter = {}, tk, res) => {
     console.log(filter);
@@ -26,23 +17,20 @@ module.exports = (app) => {
 
     const usuario = await getUsers(filter);
     user = { ...usuario[0] };
-    //console.log('KNEX1', user);
+
     if (!user) throw new ValidationError('Usuário não encontrado!');
 
     if (tk.slice(7, tk.length).trimLeft() != user.token.trim()) {
-      //Token invalido
       return res.status(401).json({ mensagem: 'Usuário Não Autorizado' });
     };
 
     const dtExpirada = new Date();
-    //console.log('dtExpirada1', dtExpirada);
 
     dtExpirada.setMinutes(-30);
 
     data_login = user.ultimo_login;
 
     if (data_login < dtExpirada) {
-      //console.log('EXPIROU');
       return res.status(401).json({ mensagem: 'Não Autorizado Expirado' });
     };
 
@@ -74,16 +62,6 @@ module.exports = (app) => {
   };
 
 
-
-  // · Usar status codes de acordo
-  // · Em caso de sucesso irá retornar um usuário mais os campos:
-  // ·· id: id do usuário(pode ser o próprio gerado pelo banco, porém seria interessante se fosse um GUID)
-  // ·· data_criacao: data da criação do usuário
-  // ·· data_atualizacao: data da última atualização do usuário
-  // ·· ultimo_login: data do último login(no caso da criação, será a mesma que a criação)
-  // ·· token: token de acesso da API(pode ser um GUID ou um JWT)
-  // · Caso o e - mail já exista, deverá retornar erro com a mensagem "E-mail já existente".
-  // · O token deverá ser persistido junto com o usuário
   const save = async (user) => {
     if (!user.name) throw new ValidationError('Nome é um atributo obrigatório');
     if (!user.mail) throw new ValidationError('Email é um atributo obrigatório');
@@ -94,7 +72,6 @@ module.exports = (app) => {
 
     const DataUser = new Date().toUTCString();
 
-    //TODO: Mudar o id para GUID e passar aqui
     let newUser = {
       name: user.name,
       mail: user.mail,

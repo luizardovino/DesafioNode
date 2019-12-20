@@ -2,22 +2,19 @@ const app = require('express')();
 const consign = require('consign');
 const knex = require('knex');
 const knexfile = require('../knexfile');
-//const knexLogger = require('knex-logger');
 const bodyParser = require('body-parser');
 
 
 app.use(bodyParser.json())
 
-//TODO criar chaveamento dinâmico
 app.db = knex(knexfile.test);
 
-//app.use(knexLogger(app.db));
 
-consign({ cwd: 'src' }) //informa o diretorio padrão src
+consign({ cwd: 'src' })
   .include('./config/passport.js')
-  .then('./config/middlewares.js') //inclui o arquivo dentro da app
+  .then('./config/middlewares.js')
   .then('./services')
-  .then('./routes') //adicionei todas as rotas dentro do app
+  .then('./routes')
   .then('./config/routes.js')
   .into(app);
 
@@ -32,12 +29,5 @@ app.use((err, req, res, next) => {
   next(err);
 });
 
-/* //outra forma de LOGAR sem usar o knex-logger
-app.db.on('query', (query) => {
-  //console.log({ sql: query.sql, bindings: query.bindings ? query.bindings.join(',') : '' });
-}).on('query-response', (response) => {
-  //console.log(response);
-}).on('error', error => console.log(error));
- */
 
 module.exports = app;

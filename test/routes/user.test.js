@@ -13,24 +13,13 @@ describe('user.test', () => {
   beforeAll(async () => {
     const res = await app.services.user.save({ name: 'User Test', mail: `${Date.now()}@mail.com`, passwd: '123456' });
     user = { ...res[0] };
-    //user.token = jwt.encode(user, 'Segredo!'); 
     let auth = app.routes.auth;
     user.token = auth.createToken(user);
-    //console.log(user.token);
   });
 
-  test('Deve buscar o usuário', () => {
-    return request(app).get(`/users/${user.id}`) //http://localhost:3001/users
-      .set('authorization', `bearer ${user.token}`)
-      .then((res) => {
-        expect(res.status).toBe(200);
-        //expect(res.body.length).toBeGreaterThan(0);
-        //expect(res.body.id).toBe(user.id);
-      });
-  });
 
   test('Não deve acessar uma rota protegida sem token', () => {
-    return request(app).get(`/users/${user.id}`) //http://localhost:3001/users
+    return request(app).get(`/users/${user.id}`)
       .then((res) => {
         expect(res.status).toBe(401);
       });
@@ -50,15 +39,10 @@ describe('user.test', () => {
     const res = await request(app).post('/auth/signup')
       .send({ name: 'Walter Mitty', mail: `${Date.now()}@mail.com`, passwd: '123456', telefones: telefones })
     expect(res.status).toBe(201);
-
-    // const { id } = res.body; //verifica se tem um id dentro do body e retorna direto apara a variavel
-    // const userDB = await app.services.user.findOne({ id });
-    // expect(userDB.passwd).not.toBeUndefined();
-    // expect(userDB.passwd).not.toBe('123456');
   });
 
 
-  //Usando request e then
+
   test('Não deve inserir usuário sem nome', () => {
     return request(app).post('/auth/signup')
       .send({ mail: 'walter@mail.com', passwd: '123456', telefones: telefones })
@@ -68,7 +52,6 @@ describe('user.test', () => {
       });
   });
 
-  //Usando async e await
   test('Não deve inserir usuário sem email', async () => {
     const result = await request(app).post('/auth/signup')
       .send({ name: 'Walter Mitty', passwd: '123456', telefones: telefones })
@@ -76,14 +59,14 @@ describe('user.test', () => {
     expect(result.body.error).toBe('Email é um atributo obrigatório');
   });
 
-  //outra forma de fazer usando o Done
+
   test('Não deve inserir usuário sem senha', (done) => {
     request(app).post('/auth/signup')
       .send({ name: 'Walter Mitty', mail: 'walter@mail.com', telefones: telefones })
       .then((res) => {
         expect(res.status).toBe(400);
         expect(res.body.error).toBe('Senha é um atributo obrigatório');
-        done(); //requisição foi finalizada
+        done();
       }).catch(err => done.fail(err));
   });
 
@@ -96,4 +79,4 @@ describe('user.test', () => {
       });
   });
 
-});//end test suit
+});

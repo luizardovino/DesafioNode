@@ -24,11 +24,7 @@ module.exports = (app) => {
     let result = '';
     try {
 
-      //console.log('token do VerificaToken', token.slice(7, token.length).trimLeft());
-      //console.log('config.jwt.secret', config.jwt.secret);
-
       let verify = jsonwebtoken.verify(token.slice(7, token.length).trimLeft(), config.jwt.secret);
-      //console.log('verify.data', verify.data);
 
       result = verify.data;
     } catch (error) {
@@ -40,18 +36,6 @@ module.exports = (app) => {
   };
 
 
-  // · Recebe um objeto com e-mail e senha.
-  // · Caso o e-mail exista e a senha seja a mesma que a senha persistida, retornar igual ao endpoint de Sign Up.
-  // · Caso o e-mail não exista, retornar erro com status apropriado mais a mensagem "Usuário e/ou senha inválidos"
-  // · Caso o e-mail exista mas a senha não bata, retornar o status apropriado 401 mais a mensagem "Usuário e/ou senha inválidos"
-
-  // Em caso de sucesso irá retornar um usuário mais os campos:
-  // ·· id: id do usuário
-  // ·· data_criacao: data da criação do usuário
-  // ·· data_atualizacao: data da última atualização do usuário
-  // ·· ultimo_login: data do último login
-  // ·· token: token de acesso da API
-
   const signin = (req, res, next) => {
     app.services.user.findByEmail({ mail: req.body.mail })
       .then((user) => {
@@ -61,7 +45,6 @@ module.exports = (app) => {
 
           const DataUltimoLogin = new Date().toUTCString();
 
-          //.update(key, value, [returning])
           app.db('users').update(user.id, { ultimo_login: DataUltimoLogin, token: token });
 
           const retUser = {
